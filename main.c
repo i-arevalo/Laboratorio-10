@@ -5,7 +5,8 @@
  *
  * Nombre del archivo: main.c
  *
- * Referencia:
+ * Referencia: Se tomó como referencia la función de enviarcomandoAT de Diego Equité para hacer la función de comandoAT. También se utilizó como referencia
+ *             los ejemplos dados por pablo mazariegos en la clase de ESP
  */
 
 
@@ -28,9 +29,9 @@
 
 
 int cont = 0;
-uint32_t x = 0;
+uint32_t i = 0;
 
-void enviarcomandoAT(char *cmd);
+void comandoAT(char *cmd);
 
 int main(void)
 {
@@ -46,24 +47,12 @@ int main(void)
     GPIOPadConfigSet (GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
     GPIOPadConfigSet (GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 
-    //Configuración del UART
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART1);
-    GPIOPinConfigure(GPIO_PB0_U1RX);
-    GPIOPinConfigure(GPIO_PB1_U1TX);
-    GPIOPinTypeUART(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-    UARTClockSourceSet(UART1_BASE, UART_CLOCK_PIOSC);
-    UARTConfigSetExpClk(UART1_BASE, 16000000, 115200, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
-    UARTEnable(UART1_BASE);
-    //enviarcomandoAT("AT");
-    for(x=0;x<10000;x++);
-
     while(1){
         if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4) != 16)
         {
             cont++;
-            while(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4) != 16);
-            if (cont == 8)
+            while(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4) != 16);//Antirebote del push para cambiar de color
+            if (cont == 8)//Sentencia para saber cuando acaba el ciclo de colores
                 cont = 0;
             switch (cont){
             case 0://negro
@@ -71,12 +60,12 @@ int main(void)
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
                 break;
-            case 1:
+            case 1://Azul
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);//rojo
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0xff);//azul
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);//verde
                 break;
-            case 2:
+            case 2://Verde
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0xff);
@@ -101,7 +90,7 @@ int main(void)
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0xff);
                 break;
-            case 7:
+            case 7://Blanco
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0xff);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0xff);
                 GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0xff);
@@ -109,88 +98,5 @@ int main(void)
 
             }
         }
-        if(!GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)){
-            SysCtlDelay(500000);//ESPERO 200 MS PARA EL ANTIRREBOTE
-            while(!GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
-            switch(cont)
-            {
-            case 0:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=166");
-                SysCtlDelay(4000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 36\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=000&color=Negro\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 1:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(4000000);
-                enviarcomandoAT("AT+CIPSEND=165");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 35\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=001&color=Azul\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 2:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=166");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 36\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=010&color=Verde\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 3:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=169");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 39\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=011&color=Turquesa\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 4:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=165");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 35\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=100&color=Rojo\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 5:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=168");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 38\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=101&color=Violeta\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 6:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=169");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 39\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=110&color=Amarillo\r\n");
-                SysCtlDelay(40000000);
-                break;
-            case 7:
-                enviarcomandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("AT+CIPSEND=167");
-                SysCtlDelay(40000000);
-                enviarcomandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 37\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\carnet=18267&id_color=111&color=Blanco\r\n");
-                SysCtlDelay(40000000);
-                break;
-            }
-        }
     }
-}
-
-void enviarcomandoAT(char *cmd)
-{
-    while(UARTBusy(UART1_BASE));
-    while(*cmd != '\0')
-    {
-        UARTCharPut(UART1_BASE, *cmd++);
-    }
-    UARTCharPut(UART1_BASE, '\r'); //CR \r\n
-    UARTCharPut(UART1_BASE, '\n'); //LF
-
 }
