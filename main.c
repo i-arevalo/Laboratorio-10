@@ -46,7 +46,7 @@ int main(void)
     //Configuracion de botonnes como pull-up
     GPIOPadConfigSet (GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
     GPIOPadConfigSet (GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
-    
+
     //Configuración del UART
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_UART1);
@@ -109,5 +109,90 @@ int main(void)
 
             }
         }
+        if(!GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0)){
+            SysCtlDelay(500000);//Delay del antirrebote
+            while(!GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
+            switch(cont)
+            {
+            case 0:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=166");
+                SysCtlDelay(4000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 37\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=000&color=Negro\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 1:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(4000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=165");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 36\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=001&color=Azul\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 2:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=166");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 37\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=010&color=Verde\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 3:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=169");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 40\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=011&color=Turquesa\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 4:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=165");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 36\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=100&color=Rojo\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 5:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=168");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 39\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=101&color=Violeta\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 6:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=169");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 39\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=110&color=Amarillo\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            case 7:
+                comandoAT("AT+CIPSTART=\"TCP\",\"192.168.1.9\",80");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("AT+CIPSEND=167");
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                comandoAT("POST /index.php HTTP/1.0\r\nHost: 192.168.1.9\r\nAccept: */*\r\nContent-Length: 38\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\ncarnet=18267&id_color=111&color=Blanco\r\n");//verificado
+                SysCtlDelay(40000000);//Delay para que se ejecute la instrucción
+                break;
+            }
+        }
     }
+}
+
+//Función para enviar los comandos AT por el UART 1
+void comandoAT(char *cmd)
+{
+    while(UARTBusy(UART1_BASE));//Ciclo para esperar a que el UART1 esté disponible
+    while(*cmd != '\0')
+    {
+        UARTCharPut(UART1_BASE, *cmd++);//Se envía la instrucción caracter por caracter
+    }
+    //Saldo de línea para terminar la instruccion AT
+    UARTCharPut(UART1_BASE, '\r');
+    UARTCharPut(UART1_BASE, '\n');
+
 }
